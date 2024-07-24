@@ -57,3 +57,18 @@ class Music(commands.Cog):
                                     after=lambda e: asyncio.run_coroutine_threadsafe(self.play_next(), self.bot.loop))
         else:
             self.is_playing = False
+
+
+    @commands.command(name="play", aliases=["p"])
+    async def play(self, ctx, *args):
+        query = " ".join(args)
+        voice_channel = ctx.author.voice.channel
+        if voice_channel == None:
+            await ctx.send("You need to be in a voice channel to play music.")
+        else:
+            song = self.search_yt(query)
+            self.queue.append([song, voice_channel])
+            if self.is_playing == False:
+                await self.play_music(ctx)
+            else:
+                await ctx.send(f"Added {song["title"]} to the queue.")
