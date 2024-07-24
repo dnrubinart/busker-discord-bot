@@ -10,7 +10,7 @@ class Music(commands.Cog):
         self.is_playing = False
         self.is_paused = False
         self.voice_channel = None
-        self.YDL_OPTIONS = {"format": "bestaudio", "noplaylist":"True"}
+        self.YDL_OPTIONS = {"format": "bestaudio", "noplaylist": "True"}
         self.FFMPEG_OPTIONS = {"before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
                                "options": "-vn -filter:a volume=0.25"}
         self.yt_dl = YoutubeDL(self.YDL_OPTIONS)
@@ -27,7 +27,7 @@ class Music(commands.Cog):
     async def play_next(self):
         if len(self.queue) > 0:
             self.is_playing = True
-            music_url = self.queue[0]["source"]
+            music_url = self.queue[0][0]["source"]
             self.queue.pop(0)
             loop = asyncio.get_event_loop()
             data = await loop.run_in_executor(None, self.search_yt, music_url)
@@ -38,5 +38,22 @@ class Music(commands.Cog):
             self.is_playing = False
 
 
-    async def play_music(self):
-        pass
+    async def play_music(self, ctx):
+        if len(self.queue) > 0:
+            self.playing = True
+            music_url = self.queue[0][0]["source"]
+            if self.voice_channel == None:
+                self.voice_channel = await self.queue[0][1].connect()
+                if self.voice_channel == None:
+                    await ctx.send("Couldn't join the voice channel.")
+                    return
+            else:
+                await self.voice_channel.move_to(self.queue[0][1])
+            self.queue.pop(0)
+            loop = asyncio.get_event_loop()
+            data = await loop.run_in_executor(None, self.search_yt, music_url)
+            song = data["url"]
+            self.voice_channel.play(discord.FFmpegPCMAudio(song, executable="ffmpeg.exe", **self.FFMPEG_OPTIONS), 
+                                    after=lambda e: asyncio.run_coroutine_threadsafe(self.play_next(), self.bot.loop))
+        else:
+            self.is_playing = False
