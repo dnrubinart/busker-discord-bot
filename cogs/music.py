@@ -25,7 +25,17 @@ class Music(commands.Cog):
 
 
     async def play_next(self):
-        pass
+        if len(self.queue) > 0:
+            self.is_playing = True
+            music_url = self.queue[0]["source"]
+            self.queue.pop(0)
+            loop = asyncio.get_event_loop()
+            data = await loop.run_in_executor(None, self.search_yt, music_url)
+            song = data["url"]
+            self.voice_channel.play(discord.FFmpegPCMAudio(song, executable="ffmpeg.exe", **self.FFMPEG_OPTIONS), 
+                                    after=lambda e: asyncio.run_coroutine_threadsafe(self.play_next(), self.bot.loop))
+        else:
+            self.is_playing = False
 
 
     async def play_music(self):
