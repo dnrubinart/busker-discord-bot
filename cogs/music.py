@@ -71,7 +71,7 @@ class Music(commands.Cog):
             if self.is_playing == False:
                 await self.play_music(ctx)
             else:
-                await ctx.send(f"Added {song["title"]} to the queue.")
+                await ctx.send(f"Added {song['title']} to the queue.")
 
     
     @commands.command(name="pause")
