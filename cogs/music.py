@@ -83,3 +83,14 @@ class Music(commands.Cog):
             await ctx.send("Music paused.")
         else:
             await ctx.send("Music is not playing.")
+
+
+    @commands.command(name="resume")
+    async def resume(self, ctx):
+        if self.voice_channel != None and self.is_paused:
+            self.voice_channel.resume()
+            self.is_playing = True
+            self.is_paused = False
+            await ctx.send("Music resumed.")
+        else:
+            await ctx.send("Music is not paused.")
