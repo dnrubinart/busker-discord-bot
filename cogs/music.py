@@ -1,96 +1,62 @@
 import discord, asyncio
 from discord.ext import commands
 from yt_dlp import YoutubeDL
+import urllib.parse, urllib.request, re
 
 
 class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.queue = []
-        self.is_playing = False
-        self.is_paused = False
-        self.voice_channel = None
-        self.YDL_OPTIONS = {"format": "bestaudio", "noplaylist": "True"}
-        self.FFMPEG_OPTIONS = {"before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
-                               "options": "-vn -filter:a volume=0.25"}
-        self.yt_dl = YoutubeDL(self.YDL_OPTIONS)
-
-
-    def search_yt(self, item):
-        if item.startswith("https://www.youtube.com/"):
-            title = self.yt_dl.extract_info(item, download=False)["title"]
-            return {"source": item, "title": title}
-        search = self.yt_dl.extract_info(f"ytsearch:{item}", download=False)["entries"][0]
-        return {"source": search["formats"][0]["url"], "title": search["title"]}
-
-
-    async def play_next(self):
-        if len(self.queue) > 0:
-            self.is_playing = True
-            music_url = self.queue[0][0]["source"]
-            self.queue.pop(0)
-            loop = asyncio.get_event_loop()
-            data = await loop.run_in_executor(None, self.search_yt, music_url)
-            song = data["url"]
-            self.voice_channel.play(discord.FFmpegPCMAudio(song, executable="ffmpeg.exe", **self.FFMPEG_OPTIONS), 
-                                    after=lambda e: asyncio.run_coroutine_threadsafe(self.play_next(), self.bot.loop))
-        else:
-            self.is_playing = False
-
-
-    async def play_music(self, ctx):
-        if len(self.queue) > 0:
-            self.playing = True
-            music_url = self.queue[0][0]["source"]
-            if self.voice_channel == None:
-                self.voice_channel = await self.queue[0][1].connect()
-                if self.voice_channel == None:
-                    await ctx.send("Couldn't join the voice channel.")
-                    return
-            else:
-                await self.voice_channel.move_to(self.queue[0][1])
-            self.queue.pop(0)
-            loop = asyncio.get_event_loop()
-            data = await loop.run_in_executor(None, self.search_yt, music_url)
-            song = data["url"]
-            self.voice_channel.play(discord.FFmpegPCMAudio(song, executable="ffmpeg.exe", **self.FFMPEG_OPTIONS), 
-                                    after=lambda e: asyncio.run_coroutine_threadsafe(self.play_next(), self.bot.loop))
-        else:
-            self.is_playing = False
-
-
-    @commands.command(name="play", aliases=["p"])
-    async def play(self, ctx, *args):
-        query = " ".join(args)
-        voice_channel = ctx.author.voice.channel
-        if voice_channel == None:
-            await ctx.send("You need to be in a voice channel to play music.")
-        else:
-            song = self.search_yt(query)
-            self.queue.append([song, voice_channel])
-            if self.is_playing == False:
-                await self.play_music(ctx)
-            else:
-                await ctx.send(f"Added {song['title']} to the queue.")
-
+        self.queues = {}
+        self.voice_clients = {}
+        self.youtube_base_url = "https://www.youtube.com/"
+        self.youtube_results_url = self.youtube_base_url + "results?"
+        self.youtube_watch_url = self.youtube_base_url + "watch?v="
+        self.YTDL_OPTIONS = {"format": "bestaudio/best", "noplaylist": True}
+        self.ytdl = YoutubeDL(self.YTDL_OPTIONS)
+        self.FFMPEG_OPTIONS = {"before_options": 
+                               "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", 
+                               "options": "-vn -filter:a 'volume=0.25'"}
+        
     
-    @commands.command(name="pause")
-    async def pause(self, ctx):
-        if self.voice_channel != None and self.voice_channel.is_playing():
-            self.voice_channel.pause()
-            self.is_playing = False
-            self.is_paused = True
-            await ctx.send("Music paused.")
-        else:
-            await ctx.send("Music is not playing.")
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(f"{self.bot.user} is now playing!")
 
 
-    @commands.command(name="resume")
-    async def resume(self, ctx):
-        if self.voice_channel != None and self.is_paused:
-            self.voice_channel.resume()
-            self.is_playing = True
-            self.is_paused = False
-            await ctx.send("Music resumed.")
-        else:
-            await ctx.send("Music is not paused.")
+    async def play_next(self, ctx):
+        if self.queues[ctx.guild.id]:
+            link = self.queues[ctx.guild.id].pop(0)
+            await self.play(ctx, link=link)
+
+
+    @commands.command(name="play")
+    async def play(self, ctx, *, link):
+        try:
+            if ctx.guild.id in self.voice_clients and self.voice_clients[ctx.guild.id].is_connected():
+                voice_client = self.voice_clients[ctx.guild.id]
+            else:
+                voice_client = await ctx.author.voice.channel.connect()
+                self.voice_clients[ctx.guild.id] = voice_client
+
+            if self.youtube_base_url not in link:
+                query_string = urllib.parse.urlencode({"search_query": link})
+                content = urllib.request.urlopen(self.youtube_results_url + query_string)
+                search_results = re.findall(r"/watch\?v=(.{11})", content.read().decode())
+                link = self.youtube_watch_url + search_results[0]
+
+            loop = asyncio.get_event_loop()
+            data = await loop.run_in_executor(None, lambda: self.ytdl.extract_info(link, download=False))
+            song = data["url"]
+            player = discord.FFmpegOpusAudio(song, **self.FFMPEG_OPTIONS)
+
+            if self.voice_clients[ctx.guild.id].is_playing() or self.voice_clients[ctx.guild.id].is_paused():
+                if ctx.guild.id not in self.queues:
+                    self.queues[ctx.guild.id] = []
+                self.queues[ctx.guild.id].append(link)
+                await ctx.send(f"Song added to the queue: {data['title']}")
+            else:
+                self.voice_clients[ctx.guild.id].play(player, after=lambda e: asyncio.run_coroutine_threadsafe(self.play_next(ctx), self.bot.loop))
+                await ctx.send(f"Now playing: {data['title']}")
+        except Exception as e:
+            print(e)
