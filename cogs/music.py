@@ -68,3 +68,11 @@ class Music(commands.Cog):
             self.voice_clients[ctx.guild.id].pause()
         except Exception as e:
             print(e)
+
+    
+    @commands.command(name="resume")
+    async def resume(self, ctx):
+        try:
+            self.voice_clients[ctx.guild.id].resume()
+        except Exception as e:
+            print(e)
