@@ -86,6 +86,15 @@ class Music(commands.Cog):
         except Exception as e:
             print(e)
 
+
+    @commands.command(name="clear")
+    async def clear(self, ctx):
+        if ctx.guild.id in self.queues:
+            self.queues[ctx.guild.id].clear()
+            await ctx.send("Queue has been cleared.")
+        else:
+            await ctx.send("There are no songs in the queue.")
+
     
     @commands.command(name="disconnect")
     async def disconnect(self, ctx):
