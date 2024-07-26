@@ -76,3 +76,15 @@ class Music(commands.Cog):
             self.voice_clients[ctx.guild.id].resume()
         except Exception as e:
             print(e)
+
+    
+    @commands.command(name="disconnect")
+    async def disconnect(self, ctx):
+        try:
+            self.voice_clients[ctx.guild.id].stop()
+            await self.voice_clients[ctx.guild.id].disconnect()
+            del self.voice_clients[ctx.guild.id]
+            if ctx.guild.id in self.queues:
+                self.queues[ctx.guild.id].clear()
+        except Exception as e:
+            print(e)
