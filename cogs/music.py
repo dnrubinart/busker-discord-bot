@@ -16,7 +16,8 @@ class Music(commands.Cog):
         self.ytdl = YoutubeDL(self.YTDL_OPTIONS)
         self.FFMPEG_OPTIONS = {"before_options": 
                                "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", 
-                               "options": "-vn -filter:a 'volume=0.25'"}
+                               "options": 
+                               "-vn -filter:a 'volume=0.25'"}
         
     
     @commands.Cog.listener()
@@ -30,7 +31,7 @@ class Music(commands.Cog):
             await self.play(ctx, link=link)
 
 
-    @commands.command(name="play")
+    @commands.command(name="play", aliases=["p"])
     async def play(self, ctx, *, link):
         try:
             if ctx.guild.id in self.voice_clients and self.voice_clients[ctx.guild.id].is_connected():
@@ -54,10 +55,10 @@ class Music(commands.Cog):
                 if ctx.guild.id not in self.queues:
                     self.queues[ctx.guild.id] = []
                 self.queues[ctx.guild.id].append(link)
-                await ctx.send(f"Song added to the queue: {data['title']}")
+                await ctx.send(f"Song added to the queue: **{data['title']}**")
             else:
                 self.voice_clients[ctx.guild.id].play(player, after=lambda e: asyncio.run_coroutine_threadsafe(self.play_next(ctx), self.bot.loop))
-                await ctx.send(f"Now playing: {data['title']}")
+                await ctx.send(f"Now playing: **{data['title']}**")
         except Exception as e:
             print(e)
 
@@ -96,7 +97,7 @@ class Music(commands.Cog):
             await ctx.send("There are no songs in the queue.")
 
     
-    @commands.command(name="disconnect")
+    @commands.command(name="disconnect", aliases=["dc"])
     async def disconnect(self, ctx):
         try:
             self.voice_clients[ctx.guild.id].stop()
