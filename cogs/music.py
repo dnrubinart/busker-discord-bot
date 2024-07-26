@@ -60,3 +60,11 @@ class Music(commands.Cog):
                 await ctx.send(f"Now playing: {data['title']}")
         except Exception as e:
             print(e)
+
+        
+    @commands.command(name="pause")
+    async def pause(self, ctx):
+        try:
+            self.voice_clients[ctx.guild.id].pause()
+        except Exception as e:
+            print(e)
