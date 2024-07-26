@@ -77,6 +77,15 @@ class Music(commands.Cog):
         except Exception as e:
             print(e)
 
+
+    @commands.command(name="skip")
+    async def skip(self, ctx):
+        try:
+            self.voice_clients[ctx.guild.id].stop()
+            await self.play_next(ctx)
+        except Exception as e:
+            print(e)
+
     
     @commands.command(name="disconnect")
     async def disconnect(self, ctx):
