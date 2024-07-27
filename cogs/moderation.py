@@ -49,3 +49,8 @@ class Moderation(commands.Cog):
             else:
                 timeout_time = datetime.timedelta(days=int(get_time))
                 await member.edit(timed_out_until=discord.utils.utcnow() + timeout_time)
+
+
+    @commands.has_any_role("Admin", "Moderator")
+    async def rtimeout(ctx, member: discord.Member):
+        await member.edit(timed_out_until=None)
