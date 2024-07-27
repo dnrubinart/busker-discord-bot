@@ -42,3 +42,10 @@ class Moderation(commands.Cog):
             else:
                 timeout_time = datetime.timedelta(hours=int(get_time))
                 await member.edit(timed_out_until=discord.utils.utcnow() + timeout_time)
+        elif "d" in timelimit:
+            get_time = timelimit.replace("d", "")
+            if int(get_time) > 28:
+                await ctx.send("You cannot timeout for more than 28 days.")
+            else:
+                timeout_time = datetime.timedelta(days=int(get_time))
+                await member.edit(timed_out_until=discord.utils.utcnow() + timeout_time)
