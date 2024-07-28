@@ -18,11 +18,6 @@ class Music(commands.Cog):
                                "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", 
                                "options": 
                                "-vn -filter:a 'volume=0.25'"}
-        
-    
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self.bot.user} is now playing!")
 
 
     async def play_next(self, ctx):

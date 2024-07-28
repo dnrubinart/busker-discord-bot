@@ -3,23 +3,28 @@ from discord.ext import commands
 
 
 class Moderation(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
     
 
-    @commands.has_any_role("Admin", "Moderator")
+    @commands.command(name="kick")
+    @commands.has_any_role("Administrator", "Moderator")
     async def kick(self, ctx, member: discord.Member, *, reason=None):
         if reason is None:
             reason = "This user has been kicked by" + ctx.author.name
         await member.kick(reason=reason)
 
 
-    @commands.has_any_role("Admin", "Moderator")
+    @commands.command()
+    @commands.has_any_role("Administrator", "Moderator")
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         if reason is None:
             reason = "This user has been banned by" + ctx.author.name
         await member.ban(reason=reason)
 
 
-    @commands.has_any_role("Admin", "Moderator")
+    @commands.command(name="timeout")
+    @commands.has_any_role("Administrator", "Moderator")
     async def timeout(self, ctx, member: discord.Member, timelimit):
         if "s" in timelimit:
             get_time = timelimit.replace("s", "")
@@ -51,6 +56,7 @@ class Moderation(commands.Cog):
                 await member.edit(timed_out_until=discord.utils.utcnow() + timeout_time)
 
 
-    @commands.has_any_role("Admin", "Moderator")
-    async def rtimeout(ctx, member: discord.Member):
+    @commands.command()
+    @commands.has_any_role("Administrator", "Moderator")
+    async def rtimeout(self, ctx, member: discord.Member):
         await member.edit(timed_out_until=None)
