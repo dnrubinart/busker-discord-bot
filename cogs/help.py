@@ -16,7 +16,10 @@ class Help(commands.Cog):
 {self.bot.command_prefix}skip - Skips the current song.
 {self.bot.command_prefix}clear - Clears the queue.
 {self.bot.command_prefix}disconnect - Disconnects the bot from the voice channel.
-
+"""
+    
+    def admin_help_message(self):
+        return f"""
 **Moderation Commands**:
 {self.bot.command_prefix}kick <member> - Kicks a member.
 {self.bot.command_prefix}ban <member> - Bans a member.
@@ -24,7 +27,13 @@ class Help(commands.Cog):
 {self.bot.command_prefix}rtimeout <member> - Removes a timeout from a member.
 """
 
-    
+
     @commands.command(name="help")
     async def help(self, ctx):
         await ctx.send(self.help_message())
+
+
+    @commands.command(name="adminhelp", aliases=["ahelp"])
+    @commands.has_any_role("Administrator", "Moderator")
+    async def admin_help(self, ctx):
+        await ctx.send(self.admin_help_message())
