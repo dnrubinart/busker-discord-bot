@@ -83,6 +83,18 @@ class Music(commands.Cog):
             print(e)
 
 
+    @commands.command(name="queue", aliases=["q"])
+    async def queue(self, ctx):
+        if ctx.guild.id in self.queues:
+            queue_list = ""
+            for i, link in enumerate(self.queues[ctx.guild.id]):
+                data = self.ytdl.extract_info(link, download=False)
+                queue_list += f"{i + 1}: {data['title']}\n"
+            await ctx.send(f"**Current songs in the queue**:\n{queue_list}")
+        else:
+            await ctx.send("There are no songs in the queue.")
+
+
     @commands.command(name="clear")
     async def clear(self, ctx):
         if ctx.guild.id in self.queues:

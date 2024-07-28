@@ -14,10 +14,12 @@ class Help(commands.Cog):
 {self.bot.command_prefix}pause - Pauses the current song.
 {self.bot.command_prefix}resume - Resumes the current song.
 {self.bot.command_prefix}skip - Skips the current song.
+{self.bot.command_prefix}queue - Shows the current queue.
 {self.bot.command_prefix}clear - Clears the queue.
 {self.bot.command_prefix}disconnect - Disconnects the bot from the voice channel.
 """
-    
+
+
     def admin_help_message(self):
         return f"""
 **Moderation Commands**:
