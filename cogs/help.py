@@ -8,21 +8,21 @@ class Help(commands.Cog):
 
 
     def help_message(self):
-        return f""" ```
-Music Commands:
-!play <song> - Plays a song.
-!pause - Pauses the current song.
-!resume - Resumes the current song.
-!skip - Skips the current song.
-!clear - Clears the queue.
-!disconnect - Disconnects the bot from the voice channel.
-        
-Moderation Commands:
-!kick <member> - Kicks a member.
-!ban <member> - Bans a member.
-!timeout <member> <time> - Times out a member.
-!rtimeout <member> - Removes a timeout from a member.
-``` """
+        return f"""
+**Music Commands**:
+{self.bot.command_prefix}play <song> - Plays a song.
+{self.bot.command_prefix}pause - Pauses the current song.
+{self.bot.command_prefix}resume - Resumes the current song.
+{self.bot.command_prefix}skip - Skips the current song.
+{self.bot.command_prefix}clear - Clears the queue.
+{self.bot.command_prefix}disconnect - Disconnects the bot from the voice channel.
+
+**Moderation Commands**:
+{self.bot.command_prefix}kick <member> - Kicks a member.
+{self.bot.command_prefix}ban <member> - Bans a member.
+{self.bot.command_prefix}timeout <member> <time> - Times out a member.
+{self.bot.command_prefix}rtimeout <member> - Removes a timeout from a member.
+"""
 
     
     @commands.command(name="help")
