@@ -23,6 +23,22 @@ class Moderation(commands.Cog):
         await member.ban(reason=reason)
 
 
+    @commands.command(name="unban")
+    @commands.has_any_role("Administrator", "Moderator")
+    async def unban(self, ctx, *, member: str):
+        banned_users = []
+        async for entry in ctx.guild.bans():
+            banned_users.append(entry)
+
+        for ban_entry in banned_users:
+            user = ban_entry.user
+            if user.name == member:
+                await ctx.guild.unban(user)
+                await ctx.send(f"{user.mention} has been unbanned.")
+                return
+        await ctx.send(f"{member} is not banned.")
+
+
     @commands.command(name="timeout")
     @commands.has_any_role("Administrator", "Moderator")
     async def timeout(self, ctx, member: discord.Member, timelimit):
@@ -56,7 +72,7 @@ class Moderation(commands.Cog):
                 await member.edit(timed_out_until=discord.utils.utcnow() + timeout_time)
 
 
-    @commands.command(name="rtimeout")
+    @commands.command(name="rmtimeout")
     @commands.has_any_role("Administrator", "Moderator")
     async def rtimeout(self, ctx, member: discord.Member):
         await member.edit(timed_out_until=None)

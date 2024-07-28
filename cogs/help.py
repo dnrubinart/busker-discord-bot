@@ -25,8 +25,9 @@ class Help(commands.Cog):
 **Moderation Commands**:
 {self.bot.command_prefix}kick <member> - Kicks a member.
 {self.bot.command_prefix}ban <member> - Bans a member.
+{self.bot.command_prefix}unban <member> - Unbans a member.
 {self.bot.command_prefix}timeout <member> <time> - Times out a member.
-{self.bot.command_prefix}rtimeout <member> - Removes a timeout from a member.
+{self.bot.command_prefix}rmtimeout <member> - Removes a timeout from a member.
 """
 
 
