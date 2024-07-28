@@ -15,7 +15,7 @@ class Moderation(commands.Cog):
         await member.kick(reason=reason)
 
 
-    @commands.command()
+    @commands.command(name="ban")
     @commands.has_any_role("Administrator", "Moderator")
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         if reason is None:
@@ -56,7 +56,7 @@ class Moderation(commands.Cog):
                 await member.edit(timed_out_until=discord.utils.utcnow() + timeout_time)
 
 
-    @commands.command()
+    @commands.command(name="rtimeout")
     @commands.has_any_role("Administrator", "Moderator")
     async def rtimeout(self, ctx, member: discord.Member):
         await member.edit(timed_out_until=None)
