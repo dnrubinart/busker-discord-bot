@@ -1,7 +1,10 @@
-import discord, asyncio
+import discord
+import asyncio
 from discord.ext import commands
 from yt_dlp import YoutubeDL
-import urllib.parse, urllib.request, re
+import urllib.parse
+import urllib.request
+import re
 
 
 class Music(commands.Cog):

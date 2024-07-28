@@ -1,4 +1,7 @@
-import os, asyncio, discord, logging
+import os
+import asyncio
+import discord
+import logging
 from discord.ext import commands
 from dotenv import load_dotenv
 from cogs.music import Music
