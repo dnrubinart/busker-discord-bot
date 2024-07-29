@@ -7,6 +7,7 @@ class Help(commands.Cog):
 
 
     def help_message(self):
+        """Returns a message containing the bot's commands."""
         return f"""
 **Music Commands**:
 {self.bot.command_prefix}play <song> - Plays a song.
@@ -20,6 +21,7 @@ class Help(commands.Cog):
 
 
     def admin_help_message(self):
+        """Returns a message containing the bot's admin commands."""
         return f"""
 **Moderation Commands**:
 {self.bot.command_prefix}kick <member> - Kicks a member.
@@ -32,10 +34,12 @@ class Help(commands.Cog):
 
     @commands.command(name="help")
     async def help(self, ctx):
+        """Displays the bot's commands."""
         await ctx.send(self.help_message())
 
 
     @commands.command(name="adminhelp", aliases=["ahelp"])
     @commands.has_any_role("Administrator", "Moderator")
     async def admin_help(self, ctx):
+        """Displays the bot's admin commands."""
         await ctx.send(self.admin_help_message())

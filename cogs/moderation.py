@@ -11,6 +11,7 @@ class Moderation(commands.Cog):
     @commands.command(name="kick")
     @commands.has_any_role("Administrator", "Moderator")
     async def kick(self, ctx, member: discord.Member, *, reason=None):
+        """Kicks a member from the server."""
         if reason is None:
             reason = "This user has been kicked by" + ctx.author.name
         await member.kick(reason=reason)
@@ -19,6 +20,7 @@ class Moderation(commands.Cog):
     @commands.command(name="ban")
     @commands.has_any_role("Administrator", "Moderator")
     async def ban(self, ctx, member: discord.Member, *, reason=None):
+        """Bans a member from the server."""
         if reason is None:
             reason = "This user has been banned by" + ctx.author.name
         await member.ban(reason=reason)
@@ -27,6 +29,7 @@ class Moderation(commands.Cog):
     @commands.command(name="unban")
     @commands.has_any_role("Administrator", "Moderator")
     async def unban(self, ctx, *, member: str):
+        """Unbans a member from the server."""
         banned_users = []
         async for entry in ctx.guild.bans():
             banned_users.append(entry)
@@ -43,6 +46,7 @@ class Moderation(commands.Cog):
     @commands.command(name="timeout")
     @commands.has_any_role("Administrator", "Moderator")
     async def timeout(self, ctx, member: discord.Member, timelimit):
+        """Timeout a member for a specified time. The time limit can be in seconds, minutes, hours or days."""
         if "s" in timelimit:
             get_time = timelimit.replace("s", "")
             if int(get_time) > 2419000:
@@ -76,4 +80,5 @@ class Moderation(commands.Cog):
     @commands.command(name="rmtimeout")
     @commands.has_any_role("Administrator", "Moderator")
     async def rtimeout(self, ctx, member: discord.Member):
+        """Removes the timeout from a member."""
         await member.edit(timed_out_until=None)

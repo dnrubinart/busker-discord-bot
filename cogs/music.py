@@ -24,6 +24,7 @@ class Music(commands.Cog):
 
 
     async def play_next(self, ctx):
+        """A helper function that plays the next song in the queue if there is one."""
         if self.queues[ctx.guild.id]:
             link = self.queues[ctx.guild.id].pop(0)
             await self.play(ctx, link=link)
@@ -31,6 +32,7 @@ class Music(commands.Cog):
 
     @commands.command(name="play", aliases=["p"])
     async def play(self, ctx, *, link):
+        """Plays a song from a YouTube link or search query. If a song is already playing, the song will be added to the queue."""
         try:
             if ctx.guild.id in self.voice_clients and self.voice_clients[ctx.guild.id].is_connected():
                 voice_client = self.voice_clients[ctx.guild.id]
@@ -63,6 +65,7 @@ class Music(commands.Cog):
         
     @commands.command(name="pause")
     async def pause(self, ctx):
+        """Pauses the current song."""
         try:
             self.voice_clients[ctx.guild.id].pause()
         except Exception as e:
@@ -71,6 +74,7 @@ class Music(commands.Cog):
     
     @commands.command(name="resume")
     async def resume(self, ctx):
+        """Resumes playing the paused song."""
         try:
             self.voice_clients[ctx.guild.id].resume()
         except Exception as e:
@@ -79,6 +83,7 @@ class Music(commands.Cog):
 
     @commands.command(name="skip")
     async def skip(self, ctx):
+        """Skips the current song and plays the next song in the queue."""
         try:
             self.voice_clients[ctx.guild.id].stop()
             await self.play_next(ctx)
@@ -88,6 +93,7 @@ class Music(commands.Cog):
 
     @commands.command(name="queue", aliases=["q"])
     async def queue(self, ctx):
+        """Displays a list of songs in the queue."""
         if ctx.guild.id in self.queues:
             queue_list = ""
             for i, link in enumerate(self.queues[ctx.guild.id]):
@@ -100,6 +106,7 @@ class Music(commands.Cog):
 
     @commands.command(name="clear")
     async def clear(self, ctx):
+        """Removes all songs from the queue."""
         if ctx.guild.id in self.queues:
             self.queues[ctx.guild.id].clear()
             await ctx.send("Queue has been cleared.")
@@ -109,6 +116,7 @@ class Music(commands.Cog):
     
     @commands.command(name="disconnect", aliases=["dc"])
     async def disconnect(self, ctx):
+        """Disconnects the bot from the voice channel. The queue will be cleared and the bot will stop playing music."""
         try:
             self.voice_clients[ctx.guild.id].stop()
             await self.voice_clients[ctx.guild.id].disconnect()
