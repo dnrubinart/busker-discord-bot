@@ -12,6 +12,7 @@ class Ollama(commands.Cog):
         self.model = os.getenv("OLLAMA_MODEL")
 
     async def generate(self, prompt):
+        """Generates a response based on the prompt using the Ollama API."""
         async with aiohttp.ClientSession() as session:
             request_data = {"model": self.model, "prompt": prompt}
             async with session.post(
@@ -21,10 +22,13 @@ class Ollama(commands.Cog):
                     full_response = await response.text()
                     return self.parse_response(full_response)
                 else:
-                    error_text = await response.text()
-                    return f"Error: {response.status} - {error_text}"
+                    error = await response.text()
+                    return f"Error: {response.status} - {error}"
 
     def parse_response(self, response_text):
+        """Parses the response from the Ollama API.
+        The response is in the format of a JSON object per line.
+        This function extracts the "response" field from each JSON object."""
         lines = response_text.strip().split("\n")
         parsed_response = ""
         for line in lines:
@@ -38,6 +42,7 @@ class Ollama(commands.Cog):
 
     @commands.command(name="ask")
     async def ask(self, ctx, *, prompt: str):
+        """Asks Ollama a question and generates a response."""
         await ctx.send("Processing your request...")
         response = await self.generate(prompt)
 

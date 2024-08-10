@@ -16,8 +16,8 @@ class Art(commands.Cog):
             verbose=True,
         )
 
-    @commands.command(name="generate", aliases=["gen"])
-    async def generate(self, ctx, *, prompt: str):
+    @commands.command(name="draw")
+    async def draw(self, ctx, *, prompt: str):
         """Generates an image based on the prompt."""
         message = await ctx.send("Processing your request...")
         generated_responses = self.stability.generate(prompt=prompt.strip())

@@ -17,7 +17,8 @@ class Help(commands.Cog):
 {self.bot.command_prefix}clear - Clears the queue.
 {self.bot.command_prefix}disconnect - Disconnects the bot from the voice channel. \n
 **Generation Commands**:
-{self.bot.command_prefix}generate <prompt> - Generates an image based on the prompt.
+{self.bot.command_prefix}draw <prompt> - Generates an image based on the prompt.
+{self.bot.command_prefix}ask <prompt> - Generates a response based on the prompt. \n
 """
 
     def admin_help_message(self):
