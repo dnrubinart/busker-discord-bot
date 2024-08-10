@@ -16,11 +16,11 @@ class Art(commands.Cog):
             verbose=True,
         )
 
-    @commands.command(name="draw")
-    async def draw(self, ctx, *, prompt):
+    @commands.command(name="generate", aliases=["gen"])
+    async def generate(self, ctx, *, prompt):
         """Generates an image based on the prompt."""
-        message = await ctx.send("Drawing your image...")
-        generated_responses = self.stability.generate(prompt=prompt)
+        message = await ctx.send("Generating...")
+        generated_responses = self.stability.generate(prompt=prompt.strip())
 
         for response in generated_responses:
             for artifact in response.artifacts:
@@ -30,9 +30,9 @@ class Art(commands.Cog):
                     )
                 elif artifact.type == generation.ARTIFACT_IMAGE:
                     image = Image.open(io.BytesIO(artifact.binary))
-                    image_buffer = io.BytesIO(artifact.binary)
-                    image.save(image_buffer, format="PNG")
-                    image_buffer.seek(0)
-                    image_file = discord.File(image_buffer, filename="image.png")
+                    image_stream = io.BytesIO(artifact.binary)
+                    image.save(image_stream, format="PNG")
+                    image_stream.seek(0)
+                    image_file = discord.File(image_stream, filename="image.png")
                     await message.edit(content=f"“{prompt}” \n")
                     await ctx.send(file=image_file)
