@@ -1,13 +1,15 @@
-import os
 import asyncio
-import discord
 import logging
+import os
+
+import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from cogs.music import Music
-from cogs.moderation import Moderation
-from cogs.help import Help
 
+from cogs.art import Art
+from cogs.help import Help
+from cogs.moderation import Moderation
+from cogs.music import Music
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
@@ -27,6 +29,8 @@ async def run_bot():
         await bot.add_cog(Music(bot))
         await bot.add_cog(Moderation(bot))
         await bot.add_cog(Help(bot))
-        await bot.start(os.getenv("TOKEN"))
+        await bot.add_cog(Art(bot))
+        await bot.start(os.getenv("DISCORD_TOKEN"))
+
 
 asyncio.run(run_bot())
