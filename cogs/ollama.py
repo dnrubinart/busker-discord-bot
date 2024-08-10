@@ -41,11 +41,11 @@ class Ollama(commands.Cog):
         await ctx.send("Processing your request...")
         response = await self.generate(prompt)
 
-        full_response = f"prompt: {prompt}\n\nAnswer: {response}"
+        full_response = f"**Question:** {prompt}\n\n**Answer:** {response}"
         response_segments = [
             full_response[i : i + 1900] for i in range(0, len(full_response), 1900)
         ]
 
         await ctx.send(response_segments[0])
-        for chunk in response_segments[1:]:
-            await ctx.send(chunk)
+        for segment in response_segments[1:]:
+            await ctx.send(segment)

@@ -5,7 +5,6 @@ class Help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     def help_message(self):
         """Returns a message containing the bot's commands."""
         return f"""
@@ -21,7 +20,6 @@ class Help(commands.Cog):
 {self.bot.command_prefix}generate <prompt> - Generates an image based on the prompt.
 """
 
-
     def admin_help_message(self):
         """Returns a message containing the bot's admin commands."""
         return f"""
@@ -33,12 +31,10 @@ class Help(commands.Cog):
 {self.bot.command_prefix}rmtimeout <member> - Removes a timeout from a member.
 """
 
-
     @commands.command(name="help")
     async def help(self, ctx):
         """Displays the bot's commands."""
         await ctx.send(self.help_message())
-
 
     @commands.command(name="adminhelp", aliases=["ahelp"])
     @commands.has_any_role("Administrator", "Moderator")

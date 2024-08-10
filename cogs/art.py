@@ -12,14 +12,14 @@ class Art(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.stability = client.StabilityInference(
-            key=os.environ["STABILITY_API_KEY"],
+            key=os.getenv("STABILITY_API_KEY"),
             verbose=True,
         )
 
     @commands.command(name="generate", aliases=["gen"])
-    async def generate(self, ctx, *, prompt):
+    async def generate(self, ctx, *, prompt: str):
         """Generates an image based on the prompt."""
-        message = await ctx.send("Generating...")
+        message = await ctx.send("Processing your request...")
         generated_responses = self.stability.generate(prompt=prompt.strip())
 
         for response in generated_responses:
