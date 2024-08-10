@@ -17,6 +17,8 @@ class Help(commands.Cog):
 {self.bot.command_prefix}queue - Shows the current queue.
 {self.bot.command_prefix}clear - Clears the queue.
 {self.bot.command_prefix}disconnect - Disconnects the bot from the voice channel.
+**Image Generation Commands**:
+{self.bot.command_prefix}draw <prompt> - Generates an image based on the prompt.
 """
 
 

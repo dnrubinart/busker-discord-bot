@@ -11,15 +11,16 @@ from stability_sdk import client
 class Art(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.stability_api = client.StabilityInference(
+        self.stability = client.StabilityInference(
             key=os.environ["STABILITY_API_KEY"],
             verbose=True,
         )
 
-    @commands.command()
+    @commands.command(name="draw")
     async def draw(self, ctx, *, prompt):
+        """Generates an image based on the prompt."""
         message = await ctx.send("Drawing your image...")
-        generated_responses = self.stability_api.generate(prompt=prompt)
+        generated_responses = self.stability.generate(prompt=prompt)
 
         for response in generated_responses:
             for artifact in response.artifacts:
