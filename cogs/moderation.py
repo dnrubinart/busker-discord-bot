@@ -13,16 +13,30 @@ class Moderation(commands.Cog):
     async def kick(self, ctx, member: discord.Member, *, reason=None):
         """Kicks a member from the server."""
         if reason is None:
-            reason = "This user has been kicked by" + ctx.author.name
+            reason = "This user has been kicked by " + ctx.author.name
         await member.kick(reason=reason)
+        embed = discord.Embed(
+            title="Member kicked.",
+            description=f"{member.mention} has been kicked.",
+            color=discord.Color.red(),
+        )
+        embed.add_field(name="Reason", value=reason)
+        await ctx.send(embed=embed)
 
     @commands.command(name="ban")
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         """Bans a member from the server."""
         if reason is None:
-            reason = "This user has been banned by" + ctx.author.name
+            reason = "This user has been banned by " + ctx.author.name
         await member.ban(reason=reason)
+        embed = discord.Embed(
+            title="Member banned.",
+            description=f"{member.mention} has been banned.",
+            color=discord.Color.red(),
+        )
+        embed.add_field(name="Reason", value=reason)
+        await ctx.send(embed=embed)
 
     @commands.command(name="unban")
     @commands.has_permissions(ban_members=True)
@@ -36,7 +50,12 @@ class Moderation(commands.Cog):
             user = ban_entry.user
             if user.name == member:
                 await ctx.guild.unban(user)
-                await ctx.send(f"{user.mention} has been unbanned.")
+                embed = discord.Embed(
+                    title="Member unbanned.",
+                    description=f"{user.mention} has been unbanned.",
+                    color=discord.Color.green(),
+                )
+                await ctx.send(embed=embed)
                 return
         await ctx.send(f"{member} is not banned.")
 
@@ -72,9 +91,21 @@ class Moderation(commands.Cog):
             else:
                 timeout_time = datetime.timedelta(days=int(get_time))
                 await member.edit(timed_out_until=discord.utils.utcnow() + timeout_time)
+        embed = discord.Embed(
+            title="Member timed out.",
+            description=f"{member.mention} has been timed out for {timelimit}.",
+            color=discord.Color.orange(),
+        )
+        await ctx.send(embed=embed)
 
     @commands.command(name="rmtimeout")
     @commands.has_permissions(kick_members=True)
     async def rtimeout(self, ctx, member: discord.Member):
         """Removes the timeout from a member."""
         await member.edit(timed_out_until=None)
+        embed = discord.Embed(
+            title="Timeout removed.",
+            description=f"{member.mention}'s timeout has been removed.",
+            color=discord.Color.green(),
+        )
+        await ctx.send(embed=embed)
