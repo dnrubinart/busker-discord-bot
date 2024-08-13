@@ -9,7 +9,7 @@ class Moderation(commands.Cog):
         self.bot = bot
 
     @commands.command(name="kick")
-    @commands.has_any_role("Administrator", "Moderator")
+    @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
         """Kicks a member from the server."""
         if reason is None:
@@ -17,7 +17,7 @@ class Moderation(commands.Cog):
         await member.kick(reason=reason)
 
     @commands.command(name="ban")
-    @commands.has_any_role("Administrator", "Moderator")
+    @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         """Bans a member from the server."""
         if reason is None:
@@ -25,7 +25,7 @@ class Moderation(commands.Cog):
         await member.ban(reason=reason)
 
     @commands.command(name="unban")
-    @commands.has_any_role("Administrator", "Moderator")
+    @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, *, member: str):
         """Unbans a member from the server."""
         banned_users = []
@@ -41,7 +41,7 @@ class Moderation(commands.Cog):
         await ctx.send(f"{member} is not banned.")
 
     @commands.command(name="timeout")
-    @commands.has_any_role("Administrator", "Moderator")
+    @commands.has_permissions(kick_members=True)
     async def timeout(self, ctx, member: discord.Member, timelimit):
         """Timeout a member for a specified time. The time limit can be in seconds, minutes, hours or days."""
         if "s" in timelimit:
@@ -74,7 +74,7 @@ class Moderation(commands.Cog):
                 await member.edit(timed_out_until=discord.utils.utcnow() + timeout_time)
 
     @commands.command(name="rmtimeout")
-    @commands.has_any_role("Administrator", "Moderator")
+    @commands.has_permissions(kick_members=True)
     async def rtimeout(self, ctx, member: discord.Member):
         """Removes the timeout from a member."""
         await member.edit(timed_out_until=None)

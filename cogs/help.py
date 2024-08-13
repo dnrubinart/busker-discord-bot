@@ -38,7 +38,7 @@ class Help(commands.Cog):
         await ctx.send(self.help_message())
 
     @commands.command(name="adminhelp", aliases=["ahelp"])
-    @commands.has_any_role("Administrator", "Moderator")
+    @commands.has_permissions(administrator=True)
     async def admin_help(self, ctx):
         """Displays the bot's admin commands."""
         await ctx.send(self.admin_help_message())
