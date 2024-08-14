@@ -9,7 +9,7 @@ class Help(commands.Cog):
         """Returns a message containing the bot's commands."""
         return f"""
 **Music Commands**:
-{self.bot.command_prefix}play <song> - Plays a song.
+{self.bot.command_prefix}play <song> - Plays a song by providing a search query or a link.
 {self.bot.command_prefix}pause - Pauses the current song.
 {self.bot.command_prefix}resume - Resumes the current song.
 {self.bot.command_prefix}skip - Skips the current song.
@@ -17,8 +17,8 @@ class Help(commands.Cog):
 {self.bot.command_prefix}clear - Clears the queue.
 {self.bot.command_prefix}disconnect - Disconnects the bot from the voice channel. \n
 **Generation Commands**:
-{self.bot.command_prefix}draw <prompt> - Generates an image based on the prompt.
-{self.bot.command_prefix}ask <prompt> - Generates a response based on the prompt. \n
+{self.bot.command_prefix}draw <prompt> - Generates an image based on the provided prompt.
+{self.bot.command_prefix}ask <prompt> - Generates a response based on the provided prompt. \n
 """
 
     def admin_help_message(self):
